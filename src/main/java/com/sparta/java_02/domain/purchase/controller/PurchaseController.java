@@ -1,0 +1,12 @@
+package com.sparta.java_02.domain.purchase.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/purchases")
+public class PurchaseController {
+  
+}
