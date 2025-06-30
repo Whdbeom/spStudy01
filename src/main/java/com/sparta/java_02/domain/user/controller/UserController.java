@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,8 +33,7 @@ public class UserController {
   }
 
   @GetMapping("/{userId}")
-  public ApiResponse<UserSearchResponse> findById(@PathVariable Long userId,
-      @RequestParam String email) {
+  public ApiResponse<UserSearchResponse> findById(@PathVariable Long userId) {
     return ApiResponse.success(userService.getUserById(userId));
   }
 

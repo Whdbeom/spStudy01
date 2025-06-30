@@ -16,6 +16,7 @@ public class ExecutionTimeAspect {
   private void allServiceMethods() {
   }
 
+
   @Around("allServiceMethods()")
   public Object measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
     // 1. 메서드 실행 전: 시작 시간 기록
@@ -33,4 +34,21 @@ public class ExecutionTimeAspect {
     // 4. 원래 메서드의 실행 결과를 반환
     return result;
   }
+
+  @Around("execution(* com.sparta.java_02.domain.purchase.service..*(..))")
+  public Object purchasesServiceExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+    log.info("purchase Service 실행 시간 로깅 Start");
+    long startTime = System.currentTimeMillis();
+
+    Object result = joinPoint.proceed();
+
+    long endTime = System.currentTimeMillis();
+    long executionTime = endTime - startTime;
+    log.info("'{}' 메서드 실행 시간: {}ms", joinPoint.getSignature().toShortString(), executionTime);
+
+    log.info("purchase Service 실행 시간 로깅 End");
+    return result;
+  }
+
+
 }

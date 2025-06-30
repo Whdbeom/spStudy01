@@ -16,7 +16,7 @@ public class PurchaseService {
   private final UserRepository userRepository;
   private final PurchaseRepository purchaseRepository;
 
-  public final Purchase getPurchase(Long purchaseId) {
+  public Purchase getPurchase(Long purchaseId) {
     User user = userRepository.findById(1L)
         .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_DATA));
 
