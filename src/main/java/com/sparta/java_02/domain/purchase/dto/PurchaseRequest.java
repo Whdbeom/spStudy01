@@ -11,6 +11,6 @@ public class PurchaseRequest {
 
   Long userId;
 
-  List<PurchaseProductRequest> purchaseProducts;
+  List<PurchaseProductRequest> purchaseItems;
 
 }

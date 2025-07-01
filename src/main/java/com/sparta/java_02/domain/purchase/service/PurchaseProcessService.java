@@ -5,7 +5,6 @@ import com.sparta.java_02.common.exception.ServiceExceptionCode;
 import com.sparta.java_02.domain.product.entity.Product;
 import com.sparta.java_02.domain.product.repository.ProductRepository;
 import com.sparta.java_02.domain.purchase.dto.PurchaseProductRequest;
-import com.sparta.java_02.domain.purchase.dto.PurchaseRequest;
 import com.sparta.java_02.domain.purchase.entity.Purchase;
 import com.sparta.java_02.domain.purchase.entity.PurchaseProduct;
 import com.sparta.java_02.domain.purchase.repository.PurchaseProductRepository;
@@ -37,57 +36,59 @@ public class PurchaseProcessService {
   }
 
   @Transactional
-  public Purchase createPurchase(PurchaseRequest request) {
-    User user = userRepository.findById(request.getUserId())
-        .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_USER));
+  public Purchase process(User user, List<PurchaseProductRequest> purchaseItems) {
+    // 이제 purchase 메서드는 "무엇을 하는지" 명확히 보여준다.
+    Purchase purchase = createAndSavePurchase(user);
+    List<PurchaseProduct> purchaseProducts = createAndProcessPurchaseProducts(purchaseItems,
+        purchase);
+    BigDecimal totalPrice = calculateTotalPrice(purchaseProducts);
 
-    Purchase purchase = purchaseRepository.save(Purchase.builder()
+    purchase.setTotalPrice(totalPrice);
+    return purchase;
+  }
+
+  // 각 메서드는 "어떻게 하는지" 구체적인 책임을 가진다.
+  private Purchase createAndSavePurchase(User user) {
+    return purchaseRepository.save(Purchase.builder()
         .user(user)
         .build());
+  }
 
-    BigDecimal totalPrice = BigDecimal.ZERO;
+  private List<PurchaseProduct> createAndProcessPurchaseProducts(
+      List<PurchaseProductRequest> itemRequests, Purchase purchase) {
     List<PurchaseProduct> purchaseProducts = new ArrayList<>();
 
-    for (PurchaseProductRequest productRequest : request.getPurchaseProducts()) {
-      Product product = productRepository.findById(productRequest.getProductId())
-          .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_DATA));
+    for (PurchaseProductRequest itemRequest : itemRequests) {
+      Product product = productRepository.findById(itemRequest.getProductId()).orElseThrow();
 
-      if (productRequest.getQuantity() > product.getStock()) {
-        throw new ServiceException(ServiceExceptionCode.NOT_FOUND_DATA);
-      }
+      validateStock(product, itemRequest.getQuantity());
+      product.reduceStock(itemRequest.getQuantity());
 
-      product.reduceStock(productRequest.getQuantity());
       PurchaseProduct purchaseProduct = PurchaseProduct.builder()
           .product(product)
           .purchase(purchase)
-          .quantity(productRequest.getQuantity())
+          .quantity(itemRequest.getQuantity())
           .price(product.getPrice())
           .build();
 
       purchaseProducts.add(purchaseProduct);
-      totalPrice = totalPrice.add(
-          product.getPrice().multiply(BigDecimal.valueOf(productRequest.getQuantity())));
-
     }
 
-    purchase.setTotalPrice(totalPrice);
     purchaseProductRepository.saveAll(purchaseProducts);
-
-    return null;
+    return purchaseProducts;
   }
 
-//  private Purchase savePurchase(Long userId) {
-//
-//  }
-//
-//  private List<PurchaseProduct> createPurchaseItem(List<PurchaseProductRequest> itemRequests,
-//      Purchase purchase) {
-//
-//  }
-//
-//  private void validateStock(Product product, int requestQuantity) {
-//
-//  }
+  private void validateStock(Product product, int requestedQuantity) {
+    if (requestedQuantity > product.getStock()) {
+      throw new ServiceException(ServiceExceptionCode.OUT_OF_STOCK_PRODUCT);
+    }
+  }
 
+  private BigDecimal calculateTotalPrice(List<PurchaseProduct> purchaseProducts) {
+    return purchaseProducts.stream()
+        .map(purchaseProduct -> purchaseProduct.getPrice()
+            .multiply(BigDecimal.valueOf(purchaseProduct.getQuantity())))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
 
 }
