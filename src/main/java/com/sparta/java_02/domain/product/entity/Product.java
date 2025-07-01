@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -23,6 +24,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@Getter
 @NoArgsConstructor
 public class Product {
 
@@ -68,4 +70,9 @@ public class Product {
     this.stock = stock;
     this.category = category;
   }
+
+  public void reduceStock(Integer stock) {
+    this.stock -= stock;
+  }
+
 }

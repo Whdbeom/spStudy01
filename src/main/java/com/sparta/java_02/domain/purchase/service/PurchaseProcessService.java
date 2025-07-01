@@ -17,10 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PurchaseService {
+public class PurchaseProcessService {
 
   private final UserRepository userRepository;
   private final PurchaseRepository purchaseRepository;
@@ -35,6 +36,7 @@ public class PurchaseService {
         .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_DATA));
   }
 
+  @Transactional
   public Purchase createPurchase(PurchaseRequest request) {
     User user = userRepository.findById(request.getUserId())
         .orElseThrow(() -> new ServiceException(ServiceExceptionCode.NOT_FOUND_USER));
@@ -73,6 +75,19 @@ public class PurchaseService {
 
     return null;
   }
-  
+
+//  private Purchase savePurchase(Long userId) {
+//
+//  }
+//
+//  private List<PurchaseProduct> createPurchaseItem(List<PurchaseProductRequest> itemRequests,
+//      Purchase purchase) {
+//
+//  }
+//
+//  private void validateStock(Product product, int requestQuantity) {
+//
+//  }
+
 
 }
