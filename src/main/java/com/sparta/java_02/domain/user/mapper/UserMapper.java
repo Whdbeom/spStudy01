@@ -14,6 +14,7 @@ public interface UserMapper {
 
   UserSearchResponse toSearch(User user);
 
+  @Mapping(target = "passwordHash", source = "password")
   User toEntity(UserCreateRequest request);
 
 

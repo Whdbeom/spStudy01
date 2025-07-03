@@ -26,8 +26,12 @@ public class GlobalExceptionHandler {
   public ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
     AtomicReference<String> errors = new AtomicReference<>("");
     ex.getBindingResult().getAllErrors().forEach(c -> errors.set(c.getDefaultMessage()));
-
+    
     return ApiResponse.badRequest(VALIDATE_ERROR, String.valueOf(errors));
+//    String errorMessages = ex.getBindingResult().getAllErrors().stream()
+//        .map(error -> error.getDefaultMessage())
+//        .collect(Collectors.joining(", "));
+//    return ApiResponse.badRequest(VALIDATE_ERROR, errorMessages);
   }
 
   @ExceptionHandler(BindException.class)

@@ -41,6 +41,7 @@ public class PurchaseProcessService {
     Purchase purchase = createAndSavePurchase(user);
     List<PurchaseProduct> purchaseProducts = createAndProcessPurchaseProducts(purchaseItems,
         purchase);
+
     BigDecimal totalPrice = calculateTotalPrice(purchaseProducts);
 
     purchase.setTotalPrice(totalPrice);
@@ -51,6 +52,7 @@ public class PurchaseProcessService {
   private Purchase createAndSavePurchase(User user) {
     return purchaseRepository.save(Purchase.builder()
         .user(user)
+//        .status(PurchaseStatus.PENDING)
         .build());
   }
 

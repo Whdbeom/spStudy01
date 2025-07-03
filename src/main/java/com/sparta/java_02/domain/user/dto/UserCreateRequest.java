@@ -15,11 +15,14 @@ public class UserCreateRequest {
   String name;
 
   @Email
+  @NotNull
   String email;
 
+  @NotNull
   @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
   String phoneNumber;
 
+  @NotNull
   String password;
 
 }

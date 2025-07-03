@@ -71,8 +71,12 @@ public class Product {
     this.category = category;
   }
 
-  public void reduceStock(Integer stock) {
-    this.stock -= stock;
+  public void reduceStock(Integer quantity) {
+    this.stock -= quantity;
+  }
+
+  public void increaseStock(Integer quantity) {
+    this.stock += quantity;
   }
 
 }

@@ -49,7 +49,7 @@ public class Purchase { // 주문
   BigDecimal totalPrice;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 20)
+  @Column(length = 20)
   PurchaseStatus status;  // varchar(20)
 
   @CreationTimestamp
