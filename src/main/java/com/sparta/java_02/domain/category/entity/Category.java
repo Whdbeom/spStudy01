@@ -12,6 +12,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,6 +23,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Table
 @Entity
+@Getter
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor
@@ -45,4 +48,13 @@ public class Category {
   @UpdateTimestamp
   @Column
   LocalDateTime updatedAt;
+
+  @Builder
+  public Category(
+      String name,
+      Category parent
+  ) {
+    this.name = name;
+    this.parent = parent;
+  }
 }
